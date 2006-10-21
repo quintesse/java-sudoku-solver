@@ -39,6 +39,14 @@ public class Cell {
 		possibleStatesReadOnly = Collections.unmodifiableSet(possibleStates);
 	}
 
+	public Cell(Board _board, Cell _cell) {
+		board = _board;
+		x = _cell.x;
+		y = _cell.y;
+		possibleStates = EnumSet.copyOf(_cell.possibleStates);
+		possibleStatesReadOnly = Collections.unmodifiableSet(possibleStates);
+	}
+
 	public int getX() {
 		return x;
 	}
@@ -59,7 +67,10 @@ public class Cell {
 		possibleStates.add(_state);
 	}
 
-	protected void removeState(CellState _state) {
+	protected void removeState(CellState _state) throws IllegalMove {
+		if (possibleStates.size() == 1 && possibleStates.contains(_state)) {
+			throw new IllegalMove("Cannot remove last remaining state " + _state + " for " + this);
+		}
 		if (possibleStates.remove(_state)) {
 			if (getPossibleStatesCount() == 1) {
 				System.out.println("Only possiblity left for " + this + " = " + getState());

@@ -21,6 +21,9 @@
  */
 package org.codejive.sudoku;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 public class Solver {
 
 	public Solver() {
@@ -91,9 +94,10 @@ public class Solver {
 			}
 		}
 		
-		System.out.println("State:");
+		System.out.println("Pre-solve state:");
 		System.out.println(boardStateString(board));
-		System.out.println(boardPossibilitiesString(board));
+		
+		solve(board);
 	}
 	
 	public static String boardStateString(Board _board) {
@@ -127,8 +131,49 @@ public class Solver {
 			}
 			res.append("|\n");
 		}
-		res.append("+---------+");
+		res.append("+---------+\n");
 		return res.toString();
+	}
+	
+	public static void solve(Board _board) {
+		solve(_board, 0, 0);
+	}
+	
+	public static boolean solve(Board _board, int _startX, int _startY) {
+		for (int y = _startY; y < 9; y++) {
+			for (int x = _startX; x < 9; x++) {
+				Cell c = _board.getCell(x, y);
+				if (c.getPossibleStatesCount() > 1) {
+					// Loop over the possible values
+					for (CellState state : c.getPossibleStates()) {
+						Board b = new Board(_board);
+						try {
+							Cell c2 = b.getCell(x, y);
+							c2.setState(state);
+							if (!b.isSolved()) {
+								if (x < 8) {
+									if (solve(b, x + 1, y)) {
+										return true;
+									}
+								} else if (y < 8) {
+									if (solve(b, 0, y + 1)) {
+										return true;
+									}
+								}
+							} else {
+								System.out.println("Solution found:");
+								System.out.println(boardStateString(b));
+								return true;
+							}
+						} catch (IllegalMove e) {
+							// Should never happen here
+							System.err.println("Illegal move: " + e);
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 }
 

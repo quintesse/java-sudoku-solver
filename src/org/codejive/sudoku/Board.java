@@ -32,12 +32,21 @@ public class Board {
 			}
 		}
 	}
+	
+	public Board(Board _board) {
+		cells = new Cell[9][9];
+		for (int y = 0; y < 9; y++) {
+			for (int x = 0; x < 9; x++) {
+				cells[y][x] = new Cell(this, _board.getCell(x, y));
+			}
+		}
+	}
 
 	public Cell getCell(int _x, int _y) {
 		return cells[_y][_x];
 	}
 
-	protected void updateRowColumnAndQuadrant(Cell _cell) {
+	protected void updateRowColumnAndQuadrant(Cell _cell) throws IllegalMove {
 		CellState state = _cell.getState();
 		// Update row
 		for (int x = 0; x < 9; x++) {
@@ -64,6 +73,18 @@ public class Board {
 				}
 			}
 		}
+	}
+	
+	public boolean isSolved() {
+		for (int y = 0; y < 9; y++) {
+			for (int x = 0; x < 9; x++) {
+				Cell c = getCell(x, y);
+				if (c.getPossibleStatesCount() > 1) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
 
