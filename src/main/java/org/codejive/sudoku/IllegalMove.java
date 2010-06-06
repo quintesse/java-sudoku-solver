@@ -21,11 +21,21 @@
  */
 package org.codejive.sudoku;
 
-public enum CellState {
-	one, two, three, four, five, six, seven, eight, nine
+public class IllegalMove extends Exception {
+
+    public IllegalMove() {
+        super();
+    }
+
+    public IllegalMove(String message) {
+        super(message);
+    }
+
+    public IllegalMove(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public IllegalMove(Throwable cause) {
+        super(cause);
+    }
 }
-
-
-/*
- * $Log:	$
- */
